@@ -44,6 +44,9 @@ def listSongDown(url, kind, id):#循环下载
     soup = BeautifulSoup(wb_data.text,"lxml")
     data =  soup.select("td.song_tb_a > a")#vip
     if data == []:
+        data =  soup.select("span.s_title > a" )#Song list
+        #print(data)
+    if data == []:
         data =  soup.select("div.song_name > a")#音乐人
     if data == []:
         data = soup.select('td > a')#老界面
@@ -57,6 +60,7 @@ def listSongDown(url, kind, id):#循环下载
             'title': title.get_text(),
             'url': title.get('href')
         }
+        #print(info)
         name = info['title']
         url = info['url']
         name = name.replace('/', '')#为了解决玛丽竹的非主流歌名
@@ -64,6 +68,7 @@ def listSongDown(url, kind, id):#循环下载
         name = name.replace('*', '')#为了解决玛丽竹的非主流歌名
         name = name.replace('?', '')#为了解决玛丽竹的非主流歌名
         lrc = lrcGet(url)
+        print(lrc)
         realurl = downGet(textGet(parseInt(url), kind))
         print(name +'\n歌曲地址:'+ url)
         if  realurl.find('false') == -1:
@@ -93,18 +98,12 @@ name = input()
 print('输入下载类型，原创输入yc，翻唱输入fc，伴奏输入bz')
 kind = input()
 page = 1
-url = 'http://5sing.kugou.com/' + name +'/' + kind +'/'+ str(page) +'.html'
+url = 'http://5sing.kugou.com/3046848/dj/56fd7e65482b8610bcdea6f6.html'
 if not os.path.exists('d:\\5sing'):
     os.mkdir('d:\\5sing')
 if not os.path.exists('d:\\5sing\\'+ name):
     os.mkdir('d:\\5sing\\'+ name )
 if not os.path.exists('d:\\5sing\\'+ name + '\\'+ kind):
     os.mkdir('d:\\5sing\\'+ name + '\\'+ kind)
-while (listSongDown(url, kind, name)):
-    page = page + 1
-    url = 'http://5sing.kugou.com/' + name +'/' + kind +'/'+ str(page) +'.html'
 
-msvcrt.getch()
-
-#<span class="s_title lt"><a target="_blank" href="http://5sing.kugou.com/fc/15043722.html">【宋】岳墓栖霞（唱：泰兰德）</a></span>
-
+listSongDown(url, kind, name)
